@@ -5,6 +5,7 @@ using UnityEngine;
 public class soccerBall : MonoBehaviour {
 
     public GameController Controller;
+    public Rigidbody rb;
     private Vector3 respawnPosition;
     private GameObject[] targets;
     private GameObject randomTarget;
@@ -17,7 +18,7 @@ public class soccerBall : MonoBehaviour {
         randomTarget = targets[Random.Range(0, targets.Length)];
     }
 
-    void Update()
+    void FixedUpdate()
     {
       if (!isRunning)
       {
@@ -27,14 +28,22 @@ public class soccerBall : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject.name);
         if(other.gameObject.tag == "Goal")
         {
 
             if (!isRunning)
             {
-              Controller.IncrementScore();
+              rb.velocity = Vector3.zero;
               StartCoroutine(Respawn());
             }
+            
+        }
+        if(other.gameObject.name == "Player")
+        {
+            rb.velocity = Vector3.zero;
+            Controller.IncrementScore();
+            StartCoroutine(Respawn());
         }
 
     }
